@@ -44,7 +44,7 @@ logger.addHandler(stream_handler)
 def start_command(client, message):
     user_id = message.chat.id
     logger.info(f'Start button has been clicked by the user {user_id}')
-    bot.send_message(user_id, f" Hello and Welcome to my bot!!! final test with release and tag  /n  You're using version {RELEASE_TAG}  {user_id}")
+    bot.send_message(user_id, f" Hello and Welcome to my bot!!! final test with release and tag  /n  You're using version tag {RELEASE_TAG}  {user_id}")
 
 
 
