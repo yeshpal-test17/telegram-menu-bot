@@ -9,6 +9,9 @@ import threading
 # Load environment variables from .env file
 load_dotenv()
 
+# Get the RELEASE_TAG from environment variables
+RELEASE_TAG = os.getenv('RELEASE_TAG', 'Unknown')
+
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
@@ -41,7 +44,7 @@ logger.addHandler(stream_handler)
 def start_command(client, message):
     user_id = message.chat.id
     logger.info(f'Start button has been clicked by the user {user_id}')
-    bot.send_message(user_id, f" Hello and Welcome to my bot!!! final test with release and tag    {user_id}")
+    bot.send_message(user_id, f" Hello and Welcome to my bot!!! final test with release and tag  /n  You're using version {RELEASE_TAG}  {user_id}")
 
 
 
