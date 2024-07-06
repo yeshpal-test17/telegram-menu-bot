@@ -1,0 +1,54 @@
+name: Release Workflow
+
+on:
+  release:
+    types: [published, prereleased]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run tests
+      run: python -m unittest discover tests
+
+    - name: Set environment and tag
+      run: |
+        if [[ ${{ github.ref }} == refs/tags/alpha-* ]]; then
+          echo "ENVIRONMENT=alpha" >> $GITHUB_ENV
+          echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        else
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+          echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        fi
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ secrets.AZURE_WEBAPP_NAME }}-${{ env.ENVIRONMENT }}
+        publish-profile: ${{ secrets[format('AZURE_WEBAPP_PUBLISH_PROFILE_{0}', env.ENVIRONMENT)] }}
+
+    - name: Update App Settings
+      uses: azure/appservice-settings@v1
+      with:
+        app-name: ${{ secrets.AZURE_WEBAPP_NAME }}-${{ env.ENVIRONMENT }}
+        app-settings-json: |
+          [
+            {
+              "name": "RELEASE_TAG",
+              "value": "${{ env.TAG }}"
+            }
+          ]
+      env:
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
