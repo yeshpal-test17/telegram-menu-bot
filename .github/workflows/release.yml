@@ -25,9 +25,6 @@ jobs:
         pwd
         ls -R
 
-    - name: Mock test run
-      run: echo "No tests to run"
-
     - name: Set environment and tag
       run: |
         if [[ ${{ github.ref }} == refs/tags/alpha-* ]]; then
