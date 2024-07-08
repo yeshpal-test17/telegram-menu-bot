@@ -36,16 +36,6 @@ jobs:
         app-name: ${{ secrets.AZURE_WEBAPP_NAME }}-${{ env.ENVIRONMENT }}
         publish-profile: ${{ secrets[format('AZURE_WEBAPP_PUBLISH_PROFILE_{0}', env.ENVIRONMENT)] }}
 
-    - name: Update App Settings
-      uses: azure/appservice-settings@v1
-      with:
-        app-name: ${{ secrets.AZURE_WEBAPP_NAME }}-${{ env.ENVIRONMENT }}
-        app-settings-json: |
-          [
-            {
-              "name": "RELEASE_TAG",
-              "value": "${{ env.TAG }}"
-            }
-          ]
+
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
